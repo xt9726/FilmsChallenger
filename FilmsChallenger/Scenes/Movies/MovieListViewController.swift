@@ -6,13 +6,23 @@
 //
 
 import UIKit
+import Combine
 
 class MovieListViewController: UIViewController {
     
     private var viewModel: MovieListViewModel!
     private var collectionView: UICollectionView!
+    private var cancellables = Set<AnyCancellable>()
     
     var coordinator: MovieCoordinatorProtocol
+    
+    var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.color = .systemBlue
+        indicator.hidesWhenStopped = true
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,16 +56,30 @@ class MovieListViewController: UIViewController {
         collectionView.register(UINib(nibName: "MovieCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "MovieCollectionViewCell")
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(collectionView)
+        view.addSubview(activityIndicator)
         
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
     private func loadMovies() {
+        
+        viewModel.isLoading
+            .sink { [weak self] isLoading in
+            if isLoading {
+                self?.activityIndicator.startAnimating()
+            } else {
+                self?.activityIndicator.stopAnimating()
+            }
+        }.store(in: &cancellables)
+        
         viewModel.loadMovies(isOnline: Network.shared.isConnected) {
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
@@ -96,3 +120,4 @@ extension MovieListViewController: UICollectionViewDelegateFlowLayout {
         self.coordinator.goToDetail(movie: selectedMovie)
     }
 }
+
