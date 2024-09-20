@@ -14,7 +14,21 @@ class FetchMoviesUseCase {
         self.repository = repository
     }
     
-    func execute(page: Int, completion: @escaping (Result<[Movie], Error>) -> Void) {
-        repository.fetchMovies(page: page, completion: completion)
+    func execute(page: Int, isOnline: Bool, completion: @escaping ([Movie]) -> Void) {
+        
+        if isOnline {
+            repository.fetchMoviesFromApi(page: page) { [weak self] result in
+                switch result {
+                case .success(let movies):
+                    self?.repository.saveMovies(movies)
+                    completion(movies)
+                case .failure(_):
+                    print("error fetchin movies")
+                }
+            }
+        } else {
+            let storedMovies = repository.fetchMovies()
+            completion(storedMovies)
+        }
     }
 }

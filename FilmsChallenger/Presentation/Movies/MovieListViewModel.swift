@@ -25,23 +25,16 @@ class MovieListViewModel {
         return movies[index]
     }
     
-    func loadMovies(completion: @escaping () -> Void) {
+    func loadMovies(isOnline: Bool, completion: @escaping () -> Void) {
         guard !isLoading else { return }
         isLoading = true
-        
-        fetchMoviesUseCase.execute(page: currentPage) { [weak self] result in
+                
+        fetchMoviesUseCase.execute(page: currentPage, isOnline: isOnline) { [weak self] fetchMovies in
             guard let self = self else { return }
+            self.movies.append(contentsOf: fetchMovies)
             self.isLoading = false
-            
-            switch result {
-            case .success(let fetchedMovies):
-                self.movies.append(contentsOf: fetchedMovies)
-                self.currentPage += 1
-                completion()
-            case .failure(let error):
-                print("Error fetching movies: \(error)")
-                completion()
-            }
+            self.currentPage += 1
+            completion()
         }
     }
 }
