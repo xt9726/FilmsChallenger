@@ -29,7 +29,8 @@ class LoginCoordinator: Coordinator, LoginCoordinatorProtocol {
     func goToHome() {
         let fetchMoviesUseCase = FetchMoviesUseCase(repository: MovieRepository())
         let movieListViewModel = MovieListViewModel(fetchMoviesUseCase: fetchMoviesUseCase)
-        let movieListVC = MovieListViewController(viewModel: movieListViewModel)
+        let movieCoordinator = MovieCoordinator(navigationController: navigationController)
+        let movieListVC = MovieListViewController(viewModel: movieListViewModel, coordinator: movieCoordinator)
         navigationController.pushViewController(movieListVC, animated: true)
     }
     
