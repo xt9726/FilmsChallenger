@@ -6,12 +6,13 @@
 //
 
 import Foundation
+import Combine
 
 class MovieListViewModel {
     private let fetchMoviesUseCase: FetchMoviesUseCase
     private var currentPage = 1
     private var movies: [Movie] = []
-    var isLoading = false
+    var isLoading = PassthroughSubject<Bool, Never>()
     
     init(fetchMoviesUseCase: FetchMoviesUseCase) {
         self.fetchMoviesUseCase = fetchMoviesUseCase
@@ -26,13 +27,13 @@ class MovieListViewModel {
     }
     
     func loadMovies(isOnline: Bool, completion: @escaping () -> Void) {
-        guard !isLoading else { return }
-        isLoading = true
+        
+        isLoading.send(true)
                 
         fetchMoviesUseCase.execute(page: currentPage, isOnline: isOnline) { [weak self] fetchMovies in
             guard let self = self else { return }
             self.movies.append(contentsOf: fetchMovies)
-            self.isLoading = false
+            self.isLoading.send(false)
             self.currentPage += 1
             completion()
         }
