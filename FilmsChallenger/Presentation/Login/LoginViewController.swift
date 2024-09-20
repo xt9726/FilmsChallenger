@@ -30,6 +30,7 @@ class LoginViewController: UIViewController {
     private let usernameTextField: EmailTextField = {
         let textField = EmailTextField()
         textField.placeholder = "Usuario"
+        textField.text = "Admin"
         textField.border_width = 2
         textField.layer.cornerRadius = 10
         textField.border_color = .black
@@ -40,6 +41,7 @@ class LoginViewController: UIViewController {
     private let passwordTextField: PasswordTextField = {
         let textField = PasswordTextField()
         textField.placeholder = "Contraseña"
+        textField.text = "Password*123"
         textField.border_width = 2
         textField.layer.cornerRadius = 10
         textField.border_color = .black
@@ -134,6 +136,9 @@ class LoginViewController: UIViewController {
     }
     
     private func navigateToNextScreen() {
-        print("Next Screen Success")
+        let fetchMoviesUseCase = FetchMoviesUseCase(repository: MovieRepository())
+        let movieListViewModel = MovieListViewModel(fetchMoviesUseCase: fetchMoviesUseCase)
+        let movieListVC = MovieListViewController(viewModel: movieListViewModel)
+        navigationController?.pushViewController(movieListVC, animated: true)
     }
 }
