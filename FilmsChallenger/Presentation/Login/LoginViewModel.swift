@@ -8,18 +8,16 @@ import Foundation
 
 class LoginViewModel {
     private let loginRepository: LoginRepositoryProtocol
-    
-    var errorMessage: String?
-    
+        
     init(loginRepository: LoginRepositoryProtocol = LoginRepository()) {
         self.loginRepository = loginRepository
     }
     
-    func validateCredentials(username: String, password: String) -> Bool {
-        let isValid = loginRepository.validateLogin(username: username, password: password)
-        if !isValid {
-            errorMessage = "Upps!! Usuario o contraseña incorrectos."
+    func loginWithUser(_ username: String, password: String) -> Bool {
+        let isLogIn = loginRepository.loginWithUser(username, password: password)
+        if !isLogIn {
+            print("Log In Failed")
         }
-        return isValid
+        return isLogIn
     }
 }

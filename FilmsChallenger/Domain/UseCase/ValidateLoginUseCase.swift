@@ -11,7 +11,7 @@ struct ValidateLoginUseCase {
     private let validUsername = "Admin"
     private let validPassword = "Password*123"
     
-    func execute(username: String, password: String) -> Bool {
+    func validateLoginWithUser(_ username: String, password: String) -> Bool {
         return username == validUsername && password == validPassword
     }
 }

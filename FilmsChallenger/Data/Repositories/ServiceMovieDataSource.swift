@@ -7,11 +7,11 @@
 
 import Foundation
 
-protocol RemoteMovieDataSourceProtocol {
+protocol ServiceMovieDataSourceProtocol {
     func fetchMovies(page: Int, completion: @escaping (Result<[Movie], Error>) -> Void)
 }
 
-class RemoteMovieDataSource: RemoteMovieDataSourceProtocol {
+class ServiceMovieDataSource: ServiceMovieDataSourceProtocol {
     private let apiKey = "a381377045f01e9e491feea2aee4d6de"
     private let baseUrl = "https://api.themoviedb.org/3/movie/upcoming"
     
@@ -25,15 +25,14 @@ class RemoteMovieDataSource: RemoteMovieDataSourceProtocol {
             }
             
             guard let data = data else {
-                completion(.failure(NSError(domain: "No data", code: -1, userInfo: nil)))
                 return
             }
             
             do {
                 let movieResponse = try JSONDecoder().decode(MovieResponse.self, from: data)
                 
-                for movies in movieResponse.results {
-                    print("\(movies.title) - \(movies.voteAverage)")
+                for (index, movies) in movieResponse.results.enumerated() {
+                    print("\(index + 1).- \(movies.title) - \(movies.voteAverage)")
                 }
                 completion(.success(movieResponse.results))
             } catch {

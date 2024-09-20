@@ -6,8 +6,14 @@
 //
 
 import UIKit
+import UIKit
 
-class LoginCoordinator: Coordinator {
+protocol LoginCoordinatorProtocol {
+    func goToHome()
+    func showLoginErrorAlert()
+}
+
+class LoginCoordinator: Coordinator, LoginCoordinatorProtocol {
     var navigationController: UINavigationController
     
     init(navigationController: UINavigationController) {
@@ -20,4 +26,19 @@ class LoginCoordinator: Coordinator {
         navigationController.pushViewController(loginViewController, animated: true)
     }
     
+    func goToHome() {
+        let fetchMoviesUseCase = FetchMoviesUseCase(repository: MovieRepository())
+        let movieListViewModel = MovieListViewModel(fetchMoviesUseCase: fetchMoviesUseCase)
+        let movieListVC = MovieListViewController(viewModel: movieListViewModel)
+        navigationController.pushViewController(movieListVC, animated: true)
+    }
+    
+    func showLoginErrorAlert() {
+        let alertController = UIAlertController(title: "Fallo en la autenticación",
+                                                message: "Upps!! Usuario o contraseña incorrectos.",
+                                                preferredStyle: .alert)
+        let dismiss = UIAlertAction(title: "Intentar de nuevo", style: .default, handler: nil)
+        alertController.addAction(dismiss)
+        navigationController.present(alertController, animated: true, completion: nil)
+    }
 }

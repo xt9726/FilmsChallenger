@@ -12,6 +12,7 @@ struct Movie: Decodable {
     let posterPath: String?
     let releaseDate: String
     let voteAverage: Double
+    let overview: String
     
     var fullPosterPath: String? {
         guard let posterPath = posterPath else { return nil }
@@ -23,5 +24,6 @@ struct Movie: Decodable {
         case posterPath = "poster_path"
         case releaseDate = "release_date"
         case voteAverage = "vote_average"
+        case overview
     }
 } 

@@ -9,7 +9,7 @@ import UIKit
 
 class LoginViewController: UIViewController {
     
-    var coordinator: LoginCoordinator?
+    var coordinator: LoginCoordinatorProtocol?
     
     private let imgLogo: UIImageView = {
         let imageView = UIImageView()
@@ -56,16 +56,6 @@ class LoginViewController: UIViewController {
         return button
     }()
     
-    private let errorLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .red
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 14)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
     private let viewModel = LoginViewModel()
     
     override func viewDidLoad() {
@@ -81,7 +71,6 @@ class LoginViewController: UIViewController {
         view.addSubview(usernameTextField)
         view.addSubview(passwordTextField)
         view.addSubview(loginButton)
-        view.addSubview(errorLabel)
         
         NSLayoutConstraint.activate([
             
@@ -113,10 +102,6 @@ class LoginViewController: UIViewController {
             loginButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             loginButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             loginButton.heightAnchor.constraint(equalToConstant: 44),
-            
-            errorLabel.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 20),
-            errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            errorLabel.widthAnchor.constraint(equalToConstant: 250)
         ])
     }
     
@@ -127,18 +112,11 @@ class LoginViewController: UIViewController {
     @objc private func didTapLoginButton() {
         guard let username = usernameTextField.text, let password = passwordTextField.text else { return }
         
-        if viewModel.validateCredentials(username: username, password: password) {
-            errorLabel.text = ""
-            navigateToNextScreen()
+        if viewModel.loginWithUser(username, password: password) {
+            self.coordinator?.goToHome()
         } else {
-            errorLabel.text = viewModel.errorMessage
+            self.coordinator?.showLoginErrorAlert()
         }
     }
-    
-    private func navigateToNextScreen() {
-        let fetchMoviesUseCase = FetchMoviesUseCase(repository: MovieRepository())
-        let movieListViewModel = MovieListViewModel(fetchMoviesUseCase: fetchMoviesUseCase)
-        let movieListVC = MovieListViewController(viewModel: movieListViewModel)
-        navigationController?.pushViewController(movieListVC, animated: true)
-    }
+
 }

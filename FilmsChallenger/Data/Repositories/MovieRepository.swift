@@ -8,9 +8,9 @@
 import Foundation
 
 class MovieRepository: MovieRepositoryProtocol {
-    private let remoteDataSource: RemoteMovieDataSourceProtocol
+    private let remoteDataSource: ServiceMovieDataSourceProtocol
     
-    init(remoteDataSource: RemoteMovieDataSourceProtocol = RemoteMovieDataSource()) {
+    init(remoteDataSource: ServiceMovieDataSourceProtocol = ServiceMovieDataSource()) {
         self.remoteDataSource = remoteDataSource
     }
     
