@@ -30,6 +30,7 @@ class MovieDetailViewController: UIViewController {
     private let voteAverageLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -37,6 +38,7 @@ class MovieDetailViewController: UIViewController {
     private let releaseDateLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -87,17 +89,32 @@ class MovieDetailViewController: UIViewController {
             
             releaseDateLabel.topAnchor.constraint(equalTo: voteAverageLabel.bottomAnchor, constant: 10),
             releaseDateLabel.leadingAnchor.constraint(equalTo: voteAverageLabel.leadingAnchor),
+            releaseDateLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             
-            overviewLabel.topAnchor.constraint(equalTo: releaseDateLabel.bottomAnchor, constant: 20),
+            overviewLabel.topAnchor.constraint(equalTo: posterImageView.bottomAnchor, constant: 20),
             overviewLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             overviewLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
         ])
     }
     
+    private func formattedReleaseDate(from dateString: String) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.locale = Locale(identifier: "es_ES")
+        
+        if let date = dateFormatter.date(from: dateString) {
+            dateFormatter.dateFormat = "d 'de' MMMM 'del' yyyy"
+            let formattedDate = dateFormatter.string(from: date)
+            return formattedDate
+        }
+        
+        return dateString
+    }
+    
     private func setupData() {
         titleLabel.text = movie.title
-        voteAverageLabel.text = "Nota: \(movie.voteAverage)"
-        releaseDateLabel.text = "Fecha de lanzamiento: \(movie.releaseDate)"
+        voteAverageLabel.text = "Puntaje:\n\(movie.voteAverage)"
+        releaseDateLabel.text = "Fecha de lanzamiento:\n\(formattedReleaseDate(from: movie.releaseDate))"
         overviewLabel.text = movie.overview
         
         if let posterPath = movie.fullPosterPath, let url = URL(string: posterPath) {
