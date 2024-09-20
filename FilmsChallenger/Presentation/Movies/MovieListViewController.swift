@@ -56,7 +56,7 @@ class MovieListViewController: UIViewController {
     }
     
     private func loadMovies() {
-        viewModel.loadMovies {
+        viewModel.loadMovies(isOnline: Network.shared.isConnected) {
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
             }

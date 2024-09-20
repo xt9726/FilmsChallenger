@@ -8,5 +8,7 @@
 import Foundation
 
 protocol MovieRepositoryProtocol {
-    func fetchMovies(page: Int, completion: @escaping (Result<[Movie], Error>) -> Void)
+    func saveMovies(_ movies: [Movie])
+    func fetchMovies() -> [Movie]
+    func fetchMoviesFromApi(page: Int, completion: @escaping (Result<[Movie], Error>) -> Void)
 }
