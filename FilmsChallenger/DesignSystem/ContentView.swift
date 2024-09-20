@@ -6,8 +6,7 @@
 //
 
 import UIKit
-
-class ContentView: AMView {
+@IBDesignable class ContentView: AMView {
     
     override func setNeedsLayout() {
         super.setNeedsLayout()
@@ -16,9 +15,10 @@ class ContentView: AMView {
         
     private func updateAppereance() {
         
-        self.shape_cornerRadius = 15
-        self.border_width = 2
-        self.border_color = .red
-        self.backgroundColor = UIColor(displayP3Red: 0, green: 0, blue: 0, alpha: 0.5)
+        self.shape_cornerRadius = 10
+        self.border_width = 1
+        self.border_color = .darkGray
+        self.shadow_opacity = 3.0
+        self.backgroundColor = .white
     }
 }

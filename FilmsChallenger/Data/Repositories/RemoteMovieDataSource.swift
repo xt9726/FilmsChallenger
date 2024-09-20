@@ -5,7 +5,6 @@
 //  Created by Raul Kevin Aliaga Shapiama on 9/19/24.
 //
 
-import Alamofire
 import Foundation
 
 protocol RemoteMovieDataSourceProtocol {
@@ -13,7 +12,7 @@ protocol RemoteMovieDataSourceProtocol {
 }
 
 class RemoteMovieDataSource: RemoteMovieDataSourceProtocol {
-    private let apiKey = "f46b58478f489737ad5a4651a4b25079"
+    private let apiKey = "a381377045f01e9e491feea2aee4d6de"
     private let baseUrl = "https://api.themoviedb.org/3/movie/upcoming"
     
     func fetchMovies(page: Int, completion: @escaping (Result<[Movie], Error>) -> Void) {
@@ -32,6 +31,10 @@ class RemoteMovieDataSource: RemoteMovieDataSourceProtocol {
             
             do {
                 let movieResponse = try JSONDecoder().decode(MovieResponse.self, from: data)
+                
+                for movies in movieResponse.results {
+                    print("\(movies.title) - \(movies.voteAverage)")
+                }
                 completion(.success(movieResponse.results))
             } catch {
                 completion(.failure(error))

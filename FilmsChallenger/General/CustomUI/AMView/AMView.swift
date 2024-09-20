@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AMView: UIView, AMShape, AMBorder, AMShadow {
+@IBDesignable class AMView: UIView, AMShape, AMBorder, AMShadow {
     
     @IBInspectable var shape_cornerRadius: CGFloat = 0 {
         didSet { self.updateShapeAppereance() }

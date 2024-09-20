@@ -7,11 +7,11 @@
 
 import UIKit
 
-class MovieListViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class MovieListViewController: UIViewController {
     
     private var viewModel: MovieListViewModel!
     private var collectionView: UICollectionView!
-        
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.hidesBackButton = true
@@ -40,15 +40,15 @@ class MovieListViewController: UIViewController, UICollectionViewDataSource, UIC
         collectionView.backgroundColor = .white
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(MovieCollectionViewCell.self, forCellWithReuseIdentifier: MovieCollectionViewCell.identifier)
+        collectionView.register(UINib(nibName: "MovieCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "MovieCollectionViewCell")
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
         ])
     }
     
@@ -59,29 +59,30 @@ class MovieListViewController: UIViewController, UICollectionViewDataSource, UIC
             }
         }
     }
-    
-    // MARK: - UICollectionViewDataSource
+}
+
+extension MovieListViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.numberOfMovies
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieCollectionViewCell.identifier, for: indexPath) as? MovieCollectionViewCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MovieCollectionViewCell", for: indexPath) as? MovieCollectionViewCell else {
             return UICollectionViewCell()
         }
         let movie = viewModel.movie(at: indexPath.item)
         cell.configure(with: movie)
         
-        // Paginate when reaching the end of the list
         if indexPath.item == viewModel.numberOfMovies - 1 {
             loadMovies()
         }
         
         return cell
     }
-    
-    // MARK: - UICollectionViewDelegateFlowLayout
+}
+
+extension MovieListViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.size.width / 2 - 10, height: 300)
