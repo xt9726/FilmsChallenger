@@ -13,7 +13,7 @@ protocol LoginCoordinatorProtocol {
     func showLoginErrorAlert()
 }
 
-class LoginCoordinator: Coordinator, LoginCoordinatorProtocol {
+class LoginCoordinator: Coordinator{
     var navigationController: UINavigationController
     
     init(navigationController: UINavigationController) {
@@ -22,24 +22,10 @@ class LoginCoordinator: Coordinator, LoginCoordinatorProtocol {
     
     func start() {
         let loginViewController = LoginViewController()
-        loginViewController.coordinator = self
+        let router = LoginRouter(viewController: loginViewController)
+        let interactor = LoginInteractor(loginRepository: LoginRepository())
+        let presenter = LoginPresenter(view: loginViewController, interactor: interactor, router: router)
+        loginViewController.presenter = presenter
         navigationController.pushViewController(loginViewController, animated: true)
-    }
-    
-    func goToHome() {
-        let fetchMoviesUseCase = FetchMoviesUseCase(repository: MovieRepository())
-        let movieListViewModel = MovieListViewModel(fetchMoviesUseCase: fetchMoviesUseCase)
-        let movieCoordinator = MovieCoordinator(navigationController: navigationController)
-        let movieListVC = MovieListViewController(viewModel: movieListViewModel, coordinator: movieCoordinator)
-        navigationController.pushViewController(movieListVC, animated: true)
-    }
-    
-    func showLoginErrorAlert() {
-        let alertController = UIAlertController(title: "Fallo en la autenticación",
-                                                message: "Upps!! Usuario o contraseña incorrectos.",
-                                                preferredStyle: .alert)
-        let dismiss = UIAlertAction(title: "Intentar de nuevo", style: .default, handler: nil)
-        alertController.addAction(dismiss)
-        navigationController.present(alertController, animated: true, completion: nil)
     }
 }

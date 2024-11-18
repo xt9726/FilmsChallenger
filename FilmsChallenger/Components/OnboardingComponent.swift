@@ -114,7 +114,9 @@ class OnboardingComponent: UIView {
         descriptionLabel.textAlignment = .center
         descriptionLabel.numberOfLines = 2
         
-        let stackView = UIStackView(arrangedSubviews: [imageView, titleLabel, descriptionLabel])
+        let stackView = UIStackView(arrangedSubviews: [imageView,
+                                                       titleLabel,
+                                                       descriptionLabel])
         stackView.axis = .vertical
         stackView.spacing = 20
         
@@ -139,12 +141,13 @@ class OnboardingComponent: UIView {
         NSLayoutConstraint.activate([
             stackView.centerXAnchor.constraint(equalTo: page.view.centerXAnchor),
             stackView.centerYAnchor.constraint(equalTo: page.view.centerYAnchor),
-            stackView.leadingAnchor.constraint(equalTo: page.view.leadingAnchor, constant: 20),
-            stackView.trailingAnchor.constraint(equalTo: page.view.trailingAnchor, constant: -20),
+            stackView.leadingAnchor.constraint(equalTo: page.view.leadingAnchor, constant: 46),
+            stackView.trailingAnchor.constraint(equalTo: page.view.trailingAnchor, constant: -46),
             
-            nextButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 40),
+            //nextButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 40),
             nextButton.leadingAnchor.constraint(equalTo: page.view.leadingAnchor, constant: 40),
-            nextButton.trailingAnchor.constraint(equalTo: page.view.trailingAnchor, constant: -40)
+            nextButton.trailingAnchor.constraint(equalTo: page.view.trailingAnchor, constant: -40),
+            nextButton.bottomAnchor.constraint(equalTo: page.bottomLayoutGuide.bottomAnchor, constant: -10)
         ])
         
         return page

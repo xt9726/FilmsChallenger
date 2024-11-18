@@ -7,9 +7,12 @@
 
 import UIKit
 
+protocol LoginViewProtocol: AnyObject {
+    func showLoginError(_ message: String)
+}
+
 class LoginViewController: UIViewController {
-    
-    var coordinator: LoginCoordinatorProtocol?
+    var presenter: LoginPresenterProtocol?
     
     private let imgLogo: UIImageView = {
         let imageView = UIImageView()
@@ -55,8 +58,6 @@ class LoginViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-    
-    private let viewModel = LoginViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -112,11 +113,18 @@ class LoginViewController: UIViewController {
     @objc private func didTapLoginButton() {
         guard let username = usernameTextField.text, let password = passwordTextField.text else { return }
         
-        if viewModel.loginWithUser(username, password: password) {
-            self.coordinator?.goToHome()
-        } else {
-            self.coordinator?.showLoginErrorAlert()
-        }
+        presenter?.loginButtonPressed(username: username, password: password)
     }
 
+}
+
+extension LoginViewController: LoginViewProtocol {
+    func showLoginError(_ message: String) {
+        let alertController = UIAlertController(title: "Fallo en la autenticación",
+                                                message: message,
+                                                preferredStyle: .alert)
+        let dismiss = UIAlertAction(title: "Intentar de nuevo", style: .default, handler: nil)
+        alertController.addAction(dismiss)
+        present(alertController, animated: true, completion: nil)
+    }
 }
